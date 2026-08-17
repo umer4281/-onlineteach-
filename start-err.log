@@ -1,9 +1,0 @@
-⚠ Warning: Next.js ignored package-lock.json in C:\Users\UMER PC because it is outside the current Git repository (C:\Users\UMER PC\Desktop\onlineteach).
- To use this directory, set `outputFileTracingRoot` in your Next.js config.
-
-⨯ Error: Connection closed.
-    at ignore-listed frames {
-  digest: '131880920'
-}
-⚠ Missing `origin` header from a forwarded Server Actions request.
-⚠ Missing `origin` header from a forwarded Server Actions request.
