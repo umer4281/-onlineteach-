@@ -1,0 +1,101 @@
+[
+  {
+    "slug": "mathematics-basics",
+    "title": "Mathematics Basics",
+    "tagline": "Algebra, geometry and problem solving from absolute zero.",
+    "description": "A friendly, step-by-step introduction to the core ideas of mathematics. You'll build real confidence with numbers, equations and shapes through short, focused video lessons and worked examples.",
+    "thumbnail": "/images/mathematics.svg",
+    "instructor": "Your Name",
+    "level": "Beginner",
+    "category": "Mathematics",
+    "lessons": [
+      {
+        "id": "numbers-and-operations",
+        "title": "Numbers & Operations",
+        "description": "Whole numbers, fractions and the order of operations.",
+        "youtubeId": "jNQXAC9IVRw",
+        "duration": "12:30"
+      },
+      {
+        "id": "introduction-to-algebra",
+        "title": "Introduction to Algebra",
+        "description": "What variables are and how to solve simple equations.",
+        "youtubeId": "aqz-KE-bpKQ",
+        "duration": "15:45"
+      },
+      {
+        "id": "geometry-fundamentals",
+        "title": "Geometry Fundamentals",
+        "description": "Angles, triangles and the area of common shapes.",
+        "youtubeId": "dQw4w9WgXcQ",
+        "duration": "14:20"
+      }
+    ]
+  },
+  {
+    "slug": "python-for-beginners",
+    "title": "Python for Beginners",
+    "tagline": "Write your first programs with the world's friendliest language.",
+    "description": "Learn Python from scratch — variables, loops, functions and small projects. Perfect if you've never programmed before, and a great way to start a career in tech.",
+    "thumbnail": "/images/python.svg",
+    "instructor": "Your Name",
+    "level": "Beginner",
+    "category": "Programming",
+    "lessons": [
+      {
+        "id": "what-is-programming",
+        "title": "What is Programming?",
+        "description": "How computers follow instructions and what code looks like.",
+        "youtubeId": "9bZkp7q19f0",
+        "duration": "11:10"
+      },
+      {
+        "id": "variables-and-data-types",
+        "title": "Variables & Data Types",
+        "description": "Storing information with variables, numbers, text and booleans.",
+        "youtubeId": "kJQP7kiw5Fk",
+        "duration": "18:05"
+      },
+      {
+        "id": "loops-and-conditions",
+        "title": "Loops & Conditions",
+        "description": "Making decisions with if/else and repeating work with loops.",
+        "youtubeId": "jNQXAC9IVRw",
+        "duration": "16:40"
+      }
+    ]
+  },
+  {
+    "slug": "english-grammar",
+    "title": "English Grammar Essentials",
+    "tagline": "Master tenses, articles and sentence structure with confidence.",
+    "description": "A clear, practical guide to English grammar for learners at every level. Understand how sentences work and communicate more clearly in writing and speech.",
+    "thumbnail": "/images/english.svg",
+    "instructor": "Your Name",
+    "level": "All Levels",
+    "category": "Languages",
+    "lessons": [
+      {
+        "id": "parts-of-speech",
+        "title": "Parts of Speech",
+        "description": "Nouns, verbs, adjectives and how sentences are built.",
+        "youtubeId": "dQw4w9WgXcQ",
+        "duration": "13:25"
+      },
+      {
+        "id": "verb-tenses",
+        "title": "Verb Tenses",
+        "description": "Past, present and future — and when to use each one.",
+        "youtubeId": "aqz-KE-bpKQ",
+        "duration": "17:50"
+      },
+      {
+        "id": "articles-and-prepositions",
+        "title": "Articles & Prepositions",
+        "description": "Master a, an, the, and the little words that connect ideas.",
+        "youtubeId": "9bZkp7q19f0",
+        "duration": "14:35"
+      }
+    ]
+  }
+]
