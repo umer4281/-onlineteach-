@@ -9,6 +9,7 @@ A free, simple online teaching website built with **Next.js**, **TypeScript** an
 - 🎬 Course detail pages with full curriculum
 - ▶️ Video lesson player (`/courses/[slug]/lessons/[lessonId]`)
 - 👤 About page
+- 🔐 Admin login & protected dashboard (`/admin`)
 - 📱 Fully responsive design
 - ⚡ 100% static — free to host anywhere
 
@@ -31,14 +32,43 @@ All content lives in one file: **`content/courses.json`**. To add a course or le
 
 The site rebuilds automatically — just save the file and (if deployed on Vercel) push to GitHub.
 
-## 🌍 Deploy for free on Vercel
+## 🔐 Admin login
 
-1. Push this folder to a new GitHub repository.
-2. Go to **https://vercel.com** and sign up with your GitHub account.
-3. Click **Add New Project** → select your repository → **Deploy**.
-4. You get a live URL like `https://onlineteach.vercel.app` in about a minute.
+The admin area is protected and lives at **`/admin`** (login at `/admin/login`).
 
-Every time you `git push`, Vercel automatically rebuilds your site. Free tier includes 100 GB/month of bandwidth — plenty for a teaching site.
+**Seeded demo credentials:** `umer@gmail.com` / `123456`
+
+Change them before going public by setting environment variables
+(`.env` locally, or Environment Variables on Vercel):
+
+```
+ADMIN_EMAIL=you@example.com
+ADMIN_PASSWORD=a-strong-password
+AUTH_SECRET=a-long-random-string
+```
+
+Sessions are signed with HMAC-SHA256, stored in an HttpOnly cookie, and expire
+after 7 days.
+
+## 🚀 Deploying to GitHub + Vercel (free)
+
+**1. Create a GitHub repository**, then connect and push this folder:
+
+```bash
+git remote add origin https://github.com/YOUR-USERNAME/onlineteach.git
+git push -u origin main
+```
+
+**2. Deploy on Vercel (free, no credit card):**
+
+1. Go to **https://vercel.com** → sign up with your GitHub account.
+2. Click **Add New Project** → select the `onlineteach` repository → **Deploy**.
+3. Your site goes live at `https://onlineteach.vercel.app` in about a minute.
+4. Set your real `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `AUTH_SECRET` under
+   **Project → Settings → Environment Variables**, then redeploy.
+
+Every future `git push` rebuilds the site automatically. The free tier includes
+100 GB/month of bandwidth — plenty for a teaching site.
 
 ## 📁 Project structure
 

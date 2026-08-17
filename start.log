@@ -1,0 +1,9 @@
+
+> onlineteach@0.1.0 start
+> next start -p 3100
+
+▲ Next.js 16.3.1
+- Local:         http://localhost:3100
+- Network:       http://192.168.43.11:3100
+✓ Ready in 863ms
+✓ Running next.config.ts took 191ms
