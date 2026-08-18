@@ -23,6 +23,12 @@ export default function Footer() {
             <Link href="/about" className="hover:text-gray-900">
               About
             </Link>
+            <Link
+              href="/admin/login"
+              className="text-gray-400 hover:text-gray-900"
+            >
+              Admin
+            </Link>
           </div>
         </div>
         <p className="mt-8 text-center text-xs text-gray-400">
