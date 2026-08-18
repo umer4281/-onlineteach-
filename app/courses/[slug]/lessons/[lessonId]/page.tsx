@@ -1,31 +1,24 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { courses, getCourseByLesson } from "@/lib/courses";
+import { getCourseByLesson } from "@/lib/courses";
 import VideoPlayer from "@/components/VideoPlayer";
 import LessonList from "@/components/LessonList";
 
-type Props = { params: Promise<{ slug: string; lessonId: string }> };
+export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
-  return courses.flatMap((course) =>
-    course.lessons.map((lesson) => ({
-      slug: course.slug,
-      lessonId: lesson.id,
-    }))
-  );
-}
+type Props = { params: Promise<{ slug: string; lessonId: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, lessonId } = await params;
-  const found = getCourseByLesson(slug, lessonId);
+  const found = await getCourseByLesson(slug, lessonId);
   if (!found) return { title: "Lesson not found" };
   return { title: found.lesson.title, description: found.lesson.description };
 }
 
 export default async function LessonPage({ params }: Props) {
   const { slug, lessonId } = await params;
-  const found = getCourseByLesson(slug, lessonId);
+  const found = await getCourseByLesson(slug, lessonId);
   if (!found) notFound();
 
   const { course, lesson, index } = found;

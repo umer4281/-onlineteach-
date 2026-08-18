@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
-import { courses } from "@/lib/courses";
+import { getCourses } from "@/lib/courses";
 import CourseCard from "@/components/CourseCard";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Courses",
   description: "Browse all free courses and start learning.",
 };
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  const courses = await getCourses();
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
       <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">

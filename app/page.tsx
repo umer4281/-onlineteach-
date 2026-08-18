@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { courses } from "@/lib/courses";
+import { getCourses } from "@/lib/courses";
 import CourseCard from "@/components/CourseCard";
+
+export const dynamic = "force-dynamic";
 
 const steps = [
   {
@@ -20,7 +22,8 @@ const steps = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const courses = await getCourses();
   const featured = courses.slice(0, 3);
 
   return (

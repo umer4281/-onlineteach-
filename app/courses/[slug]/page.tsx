@@ -2,25 +2,23 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { courses, getCourse, pluralize, initial } from "@/lib/courses";
+import { getCourse, pluralize, initial } from "@/lib/courses";
 import LessonList from "@/components/LessonList";
+
+export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return courses.map((course) => ({ slug: course.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const course = getCourse(slug);
+  const course = await getCourse(slug);
   if (!course) return { title: "Course not found" };
   return { title: course.title, description: course.tagline };
 }
 
 export default async function CoursePage({ params }: Props) {
   const { slug } = await params;
-  const course = getCourse(slug);
+  const course = await getCourse(slug);
   if (!course) notFound();
 
   return (

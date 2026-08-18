@@ -1,5 +1,7 @@
 export interface Lesson {
   id: string;
+  courseId: string;
+  sequence: number;
   title: string;
   description: string;
   youtubeId: string;
@@ -7,6 +9,7 @@ export interface Lesson {
 }
 
 export interface Course {
+  id: string;
   slug: string;
   title: string;
   tagline: string;

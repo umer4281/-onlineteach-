@@ -1,6 +1,6 @@
 # LearnHub — Online Teaching Website
 
-A free, simple online teaching website built with **Next.js**, **TypeScript** and **Tailwind CSS**. Students can browse a course catalogue and watch video lessons.
+A free, simple online teaching website built with **Next.js**, **TypeScript** and **Tailwind CSS**. Students can browse a course catalogue and watch video lessons. Content is **fully dynamic** — stored in a free **Supabase** database, so the admin can add/edit/delete courses from the dashboard and students see changes instantly.
 
 ## ✨ Features
 
@@ -10,8 +10,8 @@ A free, simple online teaching website built with **Next.js**, **TypeScript** an
 - ▶️ Video lesson player (`/courses/[slug]/lessons/[lessonId]`)
 - 👤 About page
 - 🔐 Admin login & protected dashboard (`/admin`)
-- 📱 Fully responsive design
-- ⚡ 100% static — free to host anywhere
+- ➕ Add, edit and delete **courses & lessons** right from the dashboard
+- ⚡ Dynamic content from a free Supabase database — no redeploy needed
 
 ## 🚀 Run locally
 
@@ -22,15 +22,35 @@ npm run dev
 
 Open http://localhost:3000
 
-## 🎥 Adding your own courses & videos
+## 🛢️ Supabase setup (free, ~5 minutes)
 
-All content lives in one file: **`content/courses.json`**. To add a course or lesson, edit that file:
+Courses and lessons live in a Supabase Postgres database. Set it up once:
 
-1. Upload your lesson videos to YouTube (you can make them **Unlisted** so only people with the link can watch).
-2. Copy each video's **ID** from its URL: `https://www.youtube.com/watch?v=XXXXXXXXXXX`
-3. Replace the `youtubeId` value in the lesson, or add a whole new course block following the same structure.
+1. Go to **https://supabase.com** → **Start your project** (free, no card) → create a project.
+2. Open **SQL Editor** → paste the contents of **`scripts/supabase-schema.sql`** → **Run**. (This creates the `courses` and `lessons` tables.)
+3. Open **Project Settings → API**. Copy these three values into your `.env` (locally) or **Vercel → Project → Settings → Environment Variables**:
 
-The site rebuilds automatically — just save the file and (if deployed on Vercel) push to GitHub.
+```
+NEXT_PUBLIC_SUPABASE_URL=      (your project URL, e.g. https://xxxx.supabase.co)
+NEXT_PUBLIC_SUPABASE_ANON_KEY= (anon/public key)
+SUPABASE_SERVICE_ROLE_KEY=     (service_role key — server-side only, never expose)
+```
+
+4. *(Optional but nice)* Seed the sample courses from `content/courses.json`:
+   ```bash
+   npm run seed
+   ```
+   (or `node scripts/seed.mjs`)
+
+## ➕ Adding courses & videos (the dynamic way)
+
+**No more editing JSON and redeploying.** Log in at **`/admin`** and use the dashboard to:
+
+- **Add a course** — title, category, level, instructor, thumbnail, description
+- **Manage lessons** — add/rename/reorder videos, paste a YouTube video ID per lesson
+- **Delete** courses or lessons
+
+Students see every change **immediately** — the pages read from the database on every request.
 
 ## 🔐 Admin login
 
@@ -52,7 +72,7 @@ after 7 days.
 
 ## 🚀 Deploying to GitHub + Vercel (free)
 
-**1. Create a GitHub repository**, then connect and push this folder:
+**1. Push this folder to GitHub:**
 
 ```bash
 git remote add origin https://github.com/YOUR-USERNAME/onlineteach.git
@@ -63,9 +83,10 @@ git push -u origin main
 
 1. Go to **https://vercel.com** → sign up with your GitHub account.
 2. Click **Add New Project** → select the `onlineteach` repository → **Deploy**.
-3. Your site goes live at `https://onlineteach.vercel.app` in about a minute.
-4. Set your real `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `AUTH_SECRET` under
-   **Project → Settings → Environment Variables**, then redeploy.
+3. Set all environment variables under **Project → Settings → Environment Variables**:
+   `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `AUTH_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`,
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` — then **Redeploy**.
+4. Run `scripts/supabase-schema.sql` in the Supabase SQL editor, then (optionally) `npm run seed`.
 
 Every future `git push` rebuilds the site automatically. The free tier includes
 100 GB/month of bandwidth — plenty for a teaching site.
@@ -79,13 +100,20 @@ app/
   courses/[slug]/page.tsx          → Course detail
   courses/[slug]/lessons/[lessonId]/page.tsx → Video lesson
   about/page.tsx                   → About
-content/courses.json               → All course data (edit this!)
-components/                        → Navbar, Footer, CourseCard, VideoPlayer, LessonList
-lib/                               → Types + data helpers
+  admin/page.tsx                   → Admin dashboard (add/delete courses)
+  admin/courses/[slug]/edit/page.tsx → Edit course + manage lessons
+  admin/login/page.tsx             → Admin login
+  admin/actions.ts                 → Server actions (login, course & lesson CRUD)
+content/courses.json               → Seed data for the database
+scripts/
+  supabase-schema.sql              → Creates the DB tables
+  seed.mjs                         → Loads content/courses.json into Supabase
+components/                        → Navbar, Footer, CourseCard, VideoPlayer, LessonList, ConfirmButton
+lib/                               → Types, data helpers, auth, Supabase clients
 ```
 
 ## Customize
 
 - **Site name/logo:** edit `components/Navbar.tsx`, `components/Footer.tsx` and `app/layout.tsx` metadata.
 - **Colors:** brand colors are defined in `app/globals.css`.
-- **Your bio:** edit `app/about/page.tsx` and `instructor` in `content/courses.json`.
+- **Your bio:** edit `app/about/page.tsx` and the `instructor` field when adding courses.
