@@ -1,8 +1,15 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+const url =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL ?? "";
+const anonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+  process.env.SUPABASE_PUBLISHABLE_KEY ??
+  "";
+const serviceKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ??
+  process.env.SUPABASE_SECRET_KEY ??
+  "";
 
 export const RESOURCE_BUCKET = "resources";
 
@@ -26,9 +33,14 @@ export const isSupabaseConfigured =
 /** Names of the Supabase environment variables that are still empty. */
 export function missingSupabaseEnv(): string[] {
   const missing: string[] = [];
-  if (!url) missing.push("NEXT_PUBLIC_SUPABASE_URL");
-  if (!anonKey) missing.push("NEXT_PUBLIC_SUPABASE_ANON_KEY");
-  if (!serviceKey) missing.push("SUPABASE_SERVICE_ROLE_KEY");
+  if (!url)
+    missing.push("NEXT_PUBLIC_SUPABASE_URL (or SUPABASE_URL)");
+  if (!anonKey)
+    missing.push(
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_PUBLISHABLE_KEY)"
+    );
+  if (!serviceKey)
+    missing.push("SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY)");
   return missing;
 }
 
