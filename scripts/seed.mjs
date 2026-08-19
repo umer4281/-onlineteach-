@@ -75,8 +75,8 @@ for (const course of courses) {
       sequence: i + 1,
       title: lesson.title,
       description: lesson.description,
-      youtube_id: lesson.youtubeId,
-      duration: lesson.duration,
+      meet_url: lesson.meetUrl ?? "",
+      duration: lesson.duration ?? "Live",
     });
     if (lessonError) {
       console.error(`Failed to insert lesson "${lesson.title}":`, lessonError.message);

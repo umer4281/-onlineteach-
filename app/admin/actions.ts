@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { verifyAdminCredentials } from "@/lib/session";
 import { setAdminSession, clearAdminSession, isAdmin } from "@/lib/auth";
-import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
+import { supabaseAdmin, isSupabaseConfigured, RESOURCE_BUCKET } from "@/lib/supabase";
 
 /* ---------------------------------- auth ---------------------------------- */
 
@@ -127,9 +127,9 @@ export async function createLessonAction(formData: FormData) {
   const courseId = String(formData.get("courseId") ?? "");
   const courseSlug = String(formData.get("courseSlug") ?? "");
   const title = String(formData.get("title") ?? "").trim();
-  const youtubeId = String(formData.get("youtubeId") ?? "").trim();
+  const meetUrl = String(formData.get("meetUrl") ?? "").trim();
 
-  if (!courseId || !courseSlug || !title || !youtubeId) {
+  if (!courseId || !courseSlug || !title) {
     redirect(`/admin/courses/${courseSlug}/edit?error=lesson-invalid`);
   }
 
@@ -146,8 +146,8 @@ export async function createLessonAction(formData: FormData) {
     sequence: (maxRow?.sequence ?? 0) + 1,
     title,
     description: String(formData.get("description") ?? "").trim(),
-    youtube_id: youtubeId,
-    duration: String(formData.get("duration") ?? "10:00").trim(),
+    meet_url: meetUrl,
+    duration: String(formData.get("duration") ?? "Live").trim(),
   });
 
   refreshUserPages();
@@ -161,9 +161,9 @@ export async function updateLessonAction(formData: FormData) {
   const lessonId = String(formData.get("lessonId") ?? "");
   const courseSlug = String(formData.get("courseSlug") ?? "");
   const title = String(formData.get("title") ?? "").trim();
-  const youtubeId = String(formData.get("youtubeId") ?? "").trim();
+  const meetUrl = String(formData.get("meetUrl") ?? "").trim();
 
-  if (!lessonId || !title || !youtubeId) {
+  if (!lessonId || !title) {
     redirect(`/admin/courses/${courseSlug}/edit?error=lesson-invalid`);
   }
 
@@ -172,8 +172,8 @@ export async function updateLessonAction(formData: FormData) {
     .update({
       title,
       description: String(formData.get("description") ?? "").trim(),
-      youtube_id: youtubeId,
-      duration: String(formData.get("duration") ?? "10:00").trim(),
+      meet_url: meetUrl,
+      duration: String(formData.get("duration") ?? "Live").trim(),
     })
     .eq("id", lessonId);
 
@@ -190,6 +190,99 @@ export async function deleteLessonAction(formData: FormData) {
 
   if (lessonId) {
     await supabaseAdmin!.from("lessons").delete().eq("id", lessonId);
+  }
+
+  refreshUserPages();
+  redirect(`/admin/courses/${courseSlug}/edit?deleted=1`);
+}
+
+/* --------------------------------- resources ------------------------------ */
+
+function resourceTypeFromExtension(ext: string): string {
+  const pdf = ["pdf"];
+  const image = ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp"];
+  const video = ["mp4", "webm", "mov", "mkv", "avi"];
+  const audio = ["mp3", "wav", "ogg", "m4a", "aac", "flac"];
+  if (pdf.includes(ext)) return "pdf";
+  if (image.includes(ext)) return "image";
+  if (video.includes(ext)) return "video";
+  if (audio.includes(ext)) return "audio";
+  return "file";
+}
+
+async function ensureResourceBucket() {
+  const { data: buckets } = await supabaseAdmin!.storage.listBuckets();
+  if (!buckets?.some((b) => b.name === RESOURCE_BUCKET)) {
+    await supabaseAdmin!.storage.createBucket(RESOURCE_BUCKET, {
+      public: true,
+    });
+  }
+}
+
+export async function createResourceAction(formData: FormData) {
+  await requireAdmin();
+
+  const lessonId = String(formData.get("lessonId") ?? "");
+  const courseSlug = String(formData.get("courseSlug") ?? "");
+  const title = String(formData.get("title") ?? "").trim();
+  const file = formData.get("file") as File | null;
+
+  if (!lessonId || !courseSlug || !title || !file || file.size === 0) {
+    redirect(`/admin/courses/${courseSlug}/edit?error=resource-invalid`);
+  }
+
+  await ensureResourceBucket();
+
+  const ext = (file.name.split(".").pop() ?? "file").toLowerCase();
+  const path = `${lessonId}/${crypto.randomUUID()}.${ext}`;
+
+  const { error: upErr } = await supabaseAdmin!.storage
+    .from(RESOURCE_BUCKET)
+    .upload(path, file, { contentType: file.type || undefined, upsert: false });
+  if (upErr) redirect(`/admin/courses/${courseSlug}/edit?error=upload-failed`);
+
+  const { data: maxRow } = await supabaseAdmin!
+    .from("resources")
+    .select("sequence")
+    .eq("lesson_id", lessonId)
+    .order("sequence", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const { error: insErr } = await supabaseAdmin!.from("resources").insert({
+    lesson_id: lessonId,
+    sequence: (maxRow?.sequence ?? 0) + 1,
+    title,
+    type: resourceTypeFromExtension(ext),
+    file_path: path,
+    likes: 0,
+  });
+
+  refreshUserPages();
+  if (insErr) redirect(`/admin/courses/${courseSlug}/edit?error=resource-failed`);
+  redirect(`/admin/courses/${courseSlug}/edit?resource=1`);
+}
+
+export async function deleteResourceAction(formData: FormData) {
+  await requireAdmin();
+
+  const resourceId = String(formData.get("resourceId") ?? "");
+  const courseSlug = String(formData.get("courseSlug") ?? "");
+
+  if (resourceId) {
+    const { data } = await supabaseAdmin!
+      .from("resources")
+      .select("file_path")
+      .eq("id", resourceId)
+      .maybeSingle();
+
+    await supabaseAdmin!.from("resources").delete().eq("id", resourceId);
+
+    if (data?.file_path) {
+      await supabaseAdmin!.storage
+        .from(RESOURCE_BUCKET)
+        .remove([data.file_path]);
+    }
   }
 
   refreshUserPages();

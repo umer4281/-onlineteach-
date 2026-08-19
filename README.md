@@ -11,6 +11,8 @@ A free, simple online teaching website built with **Next.js**, **TypeScript** an
 - 👤 About page
 - 🔐 Admin login & protected dashboard (`/admin`)
 - ➕ Add, edit and delete **courses & lessons** right from the dashboard
+- 🎥 **Live classes** — each lesson has a Google Meet (or other) link to join
+- 📎 **Share resources** — upload PDFs, images, videos & audio per lesson; students can open and **like** them
 - ⚡ Dynamic content from a free Supabase database — no redeploy needed
 
 ## 🚀 Run locally
@@ -47,10 +49,12 @@ SUPABASE_SERVICE_ROLE_KEY=     (service_role key — server-side only, never exp
 **No more editing JSON and redeploying.** Log in at **`/admin`** and use the dashboard to:
 
 - **Add a course** — title, category, level, instructor, thumbnail, description
-- **Manage lessons** — add/rename/reorder videos, paste a YouTube video ID per lesson
-- **Delete** courses or lessons
+- **Manage lessons** — add/rename lessons with a **Google Meet link** for live teaching
+- **Share resources** — upload PDF, image, video or audio files per lesson
+- **Delete** courses, lessons, or resources
 
-Students see every change **immediately** — the pages read from the database on every request.
+Students see every change **immediately** — the pages read from the database
+on every request, and they can **like** your shared resources.
 
 ## 🔐 Admin login
 

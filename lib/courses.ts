@@ -1,4 +1,4 @@
-import type { Course, Lesson } from "./types";
+import type { Course, Lesson, Resource } from "./types";
 import { supabasePublic, isSupabaseConfigured } from "./supabase";
 
 interface CourseRow {
@@ -20,8 +20,31 @@ interface LessonRow {
   sequence: number;
   title: string;
   description: string;
-  youtube_id: string;
+  meet_url: string;
   duration: string;
+  resources?: ResourceRow[];
+}
+
+interface ResourceRow {
+  id: string;
+  lesson_id: string;
+  sequence: number;
+  title: string;
+  type: string;
+  file_path: string;
+  likes: number;
+}
+
+function mapResource(row: ResourceRow): Resource {
+  return {
+    id: row.id,
+    lessonId: row.lesson_id,
+    sequence: row.sequence,
+    title: row.title,
+    type: row.type,
+    filePath: row.file_path,
+    likes: row.likes,
+  };
 }
 
 function mapLesson(row: LessonRow): Lesson {
@@ -31,8 +54,12 @@ function mapLesson(row: LessonRow): Lesson {
     sequence: row.sequence,
     title: row.title,
     description: row.description,
-    youtubeId: row.youtube_id,
+    meetUrl: row.meet_url,
     duration: row.duration,
+    resources: (row.resources ?? [])
+      .slice()
+      .sort((a, b) => a.sequence - b.sequence)
+      .map(mapResource),
   };
 }
 
@@ -54,12 +81,12 @@ function mapCourse(row: CourseRow): Course {
   };
 }
 
-/** All courses with their lessons, live from the database. */
+/** All courses with their lessons and resources, live from the database. */
 export async function getCourses(): Promise<Course[]> {
   if (!isSupabaseConfigured) return [];
   const { data, error } = await supabasePublic!
     .from("courses")
-    .select("*, lessons(*)")
+    .select("*, lessons(*, resources(*))")
     .order("created_at", { ascending: true });
   if (error) return [];
   return (data ?? []).map(mapCourse);
@@ -70,7 +97,7 @@ export async function getCourse(slug: string): Promise<Course | undefined> {
   if (!isSupabaseConfigured) return undefined;
   const { data, error } = await supabasePublic!
     .from("courses")
-    .select("*, lessons(*)")
+    .select("*, lessons(*, resources(*))")
     .eq("slug", slug)
     .maybeSingle();
   if (error || !data) return undefined;

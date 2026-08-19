@@ -10,7 +10,10 @@ import {
   createLessonAction,
   updateLessonAction,
   deleteLessonAction,
+  createResourceAction,
+  deleteResourceAction,
 } from "@/app/admin/actions";
+import { resourceFileUrl } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +59,8 @@ export default async function EditCoursePage({ params, searchParams }: Props) {
 
       {status.saved && <Banner kind="green">Changes saved.</Banner>}
       {status.added && <Banner kind="green">Lesson added.</Banner>}
-      {status.deleted && <Banner kind="green">Lesson deleted.</Banner>}
+      {status.resource && <Banner kind="green">Resource uploaded.</Banner>}
+      {status.deleted && <Banner kind="green">Item deleted.</Banner>}
       {status.error && (
         <Banner kind="red">
           Something went wrong — check the fields and try again.
@@ -98,8 +102,8 @@ export default async function EditCoursePage({ params, searchParams }: Props) {
           <input type="hidden" name="courseId" value={course.id} />
           <input type="hidden" name="courseSlug" value={course.slug} />
           <LabeledInput label="Title" name="title" required placeholder="e.g. Lesson 1: Getting started" />
-          <LabeledInput label="YouTube video ID" name="youtubeId" required placeholder="dQw4w9WgXcQ" />
-          <LabeledInput label="Duration" name="duration" placeholder="10:00" />
+          <LabeledInput label="Google Meet / live class link" name="meetUrl" placeholder="https://meet.google.com/xxx-xxxx-xxx" />
+          <LabeledInput label="Schedule / duration" name="duration" placeholder="e.g. Mon 4:00 PM" />
           <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700">Description</label>
             <textarea name="description" rows={2} className={inputCls} />
@@ -140,8 +144,8 @@ export default async function EditCoursePage({ params, searchParams }: Props) {
                 <input type="hidden" name="lessonId" value={lesson.id} />
                 <input type="hidden" name="courseSlug" value={course.slug} />
                 <LabeledInput label="Title" name="title" required defaultValue={lesson.title} />
-                <LabeledInput label="YouTube ID" name="youtubeId" required defaultValue={lesson.youtubeId} />
-                <LabeledInput label="Duration" name="duration" defaultValue={lesson.duration} />
+                <LabeledInput label="Google Meet / live class link" name="meetUrl" defaultValue={lesson.meetUrl} placeholder="https://meet.google.com/xxx-xxxx-xxx" />
+                <LabeledInput label="Schedule / duration" name="duration" defaultValue={lesson.duration} />
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium text-gray-500">Description</label>
                   <textarea name="description" rows={1} defaultValue={lesson.description} className={inputCls} />
@@ -160,6 +164,74 @@ export default async function EditCoursePage({ params, searchParams }: Props) {
                 <input type="hidden" name="courseSlug" value={course.slug} />
                 <ConfirmButton>Delete lesson</ConfirmButton>
               </form>
+
+              <div className="mt-5 border-t border-gray-100 pt-4">
+                <p className="text-xs font-bold uppercase tracking-wide text-gray-400">
+                  Resources ({lesson.resources.length})
+                </p>
+                <form action={createResourceAction} className="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+                  <input type="hidden" name="lessonId" value={lesson.id} />
+                  <input type="hidden" name="courseSlug" value={course.slug} />
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500">Title</label>
+                    <input name="title" required className={inputCls} placeholder="e.g. Lesson notes" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500">
+                      File (PDF, image, video, audio)
+                    </label>
+                    <input
+                      name="file"
+                      type="file"
+                      required
+                      className="mt-1 block w-full text-sm text-gray-500 file:mr-2 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-brand-700 hover:file:bg-brand-100"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <button
+                      type="submit"
+                      className="rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700"
+                    >
+                      Upload
+                    </button>
+                  </div>
+                </form>
+
+                <ul className="mt-3 space-y-2">
+                  {lesson.resources.length === 0 && (
+                    <li className="text-xs text-gray-400">No resources yet.</li>
+                  )}
+                  {lesson.resources.map((res) => (
+                    <li
+                      key={res.id}
+                      className="flex items-center gap-3 rounded-lg bg-gray-50 px-3 py-2"
+                    >
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-800">
+                        {res.title}
+                      </span>
+                      <span className="text-xs text-gray-400">♥ {res.likes}</span>
+                      <a
+                        href={resourceFileUrl(res.filePath)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-semibold text-brand-600 hover:text-brand-700"
+                      >
+                        Open
+                      </a>
+                      <form action={deleteResourceAction}>
+                        <input type="hidden" name="resourceId" value={res.id} />
+                        <input type="hidden" name="courseSlug" value={course.slug} />
+                        <button
+                          type="submit"
+                          className="text-xs font-semibold text-red-500 hover:text-red-600"
+                        >
+                          Remove
+                        </button>
+                      </form>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ))}
         </div>
