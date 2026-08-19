@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const links = [
   { href: "/", label: "Home" },
@@ -11,11 +12,15 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-white/85 backdrop-blur-md">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-lg text-white shadow-sm">
-            🎓
-          </span>
+          <Image
+            src="/images/smart-logo.jpg"
+            alt="Smart Learning logo"
+            width={40}
+            height={40}
+            className="h-9 w-9 rounded-lg object-cover"
+          />
           <span className="text-lg font-extrabold tracking-tight text-gray-900">
-            LearnHub
+            Smart Learning
           </span>
         </Link>
         <div className="flex items-center gap-1">

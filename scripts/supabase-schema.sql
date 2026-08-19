@@ -14,7 +14,7 @@ create table if not exists public.courses (
   title text not null,
   tagline text not null default '',
   description text not null default '',
-  thumbnail text not null default '/images/course.svg',
+  thumbnail text not null default '/images/smart-logo.jpg',
   instructor text not null default '',
   level text not null default 'Beginner',
   category text not null default 'General',

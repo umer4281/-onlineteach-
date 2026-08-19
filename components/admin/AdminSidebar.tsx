@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/admin/actions";
 
@@ -13,11 +14,15 @@ function DesktopSidebar({ pathname }: { pathname: string }) {
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-gray-200 bg-white lg:flex">
       <div className="flex items-center gap-3 px-6 py-6">
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-lg text-white">
-          🎓
-        </span>
+        <Image
+          src="/images/smart-logo.jpg"
+          alt="Smart Learning logo"
+          width={40}
+          height={40}
+          className="h-10 w-10 rounded-xl object-cover"
+        />
         <div>
-          <p className="font-bold leading-tight text-gray-900">LearnHub</p>
+          <p className="font-bold leading-tight text-gray-900">Smart Learning</p>
           <p className="text-xs font-medium text-gray-400">Admin</p>
         </div>
       </div>
@@ -63,7 +68,7 @@ function DesktopSidebar({ pathname }: { pathname: string }) {
           </button>
         </form>
         <p className="px-3 pt-2 text-xs text-gray-400">
-          © {new Date().getFullYear()} LearnHub
+          © {new Date().getFullYear()} Smart Learning
         </p>
       </div>
     </aside>
@@ -74,10 +79,14 @@ function MobileBar({ pathname }: { pathname: string }) {
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 lg:hidden">
       <div className="flex items-center gap-2">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm text-white">
-          🎓
-        </span>
-        <span className="text-sm font-bold text-gray-900">LearnHub Admin</span>
+        <Image
+          src="/images/smart-logo.jpg"
+          alt="Smart Learning logo"
+          width={30}
+          height={30}
+          className="h-8 w-8 rounded-lg object-cover"
+        />
+        <span className="text-sm font-bold text-gray-900">Smart Learning</span>
       </div>
       <nav className="flex items-center gap-1">
         {navItems.map((item) => {

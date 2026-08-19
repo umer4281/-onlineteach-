@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getCourses } from "@/lib/courses";
 import CourseCard from "@/components/CourseCard";
 
@@ -40,8 +41,15 @@ export default async function Home() {
     <>
       <section className="bg-gradient-to-b from-brand-50 via-white to-white">
         <div className="mx-auto max-w-6xl px-4 py-20 text-center sm:px-6 sm:py-28">
-          <span className="inline-flex items-center rounded-full border border-brand-200 bg-white px-4 py-1.5 text-sm font-medium text-brand-700 shadow-sm">
-            🎓 Free online teaching
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-1.5 text-sm font-medium text-brand-700 shadow-sm">
+            <Image
+              src="/images/smart-logo.jpg"
+              alt="Smart Learning logo"
+              width={22}
+              height={22}
+              className="h-5 w-5 rounded-full object-cover"
+            />
+            Smart Learning — free online teaching
           </span>
           <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-extrabold tracking-tight sm:text-6xl">
             Learn anything,{" "}

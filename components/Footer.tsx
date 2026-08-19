@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -7,16 +8,20 @@ export default function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-sm text-white">
-                🎓
-              </span>
+              <Image
+                src="/images/smart-logo.jpg"
+                alt="Smart Learning logo"
+                width={36}
+                height={36}
+                className="h-8 w-8 rounded-lg object-cover"
+              />
               <span className="text-lg font-extrabold tracking-tight text-gray-900">
-                LearnHub
+                Smart Learning
               </span>
             </div>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-gray-500">
-              Free online courses taught live over Google Meet — with
-              downloadable resources and notes you can like and share.
+              Live classes over Google Meet — with downloadable resources and
+              notes you can like and share. Learn anything, anywhere.
             </p>
           </div>
           <div>
@@ -55,7 +60,7 @@ export default function Footer() {
         </div>
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-gray-200 pt-6 sm:flex-row">
           <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} LearnHub. All rights reserved.
+            © {new Date().getFullYear()} Smart Learning. All rights reserved.
           </p>
           <p className="text-xs text-gray-400">
             Made with 💜 for learning everywhere

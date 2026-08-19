@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { loginAction } from "@/app/admin/actions";
 import { getAdminCredentials } from "@/lib/session";
@@ -20,14 +21,18 @@ export default async function LoginPage({
     <div className="mx-auto flex max-w-md flex-col px-4 py-16 sm:px-6">
       <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
         <div className="text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600 text-2xl">
-            🔐
-          </span>
+          <Image
+            src="/images/smart-logo.jpg"
+            alt="Smart Learning logo"
+            width={56}
+            height={56}
+            className="mx-auto h-14 w-14 rounded-2xl object-cover shadow-sm"
+          />
           <h1 className="mt-4 text-2xl font-bold text-gray-900">
             Admin Login
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Sign in to manage your teaching site.
+            Sign in to manage Smart Learning.
           </p>
         </div>
 

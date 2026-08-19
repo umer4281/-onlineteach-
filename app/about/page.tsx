@@ -3,14 +3,14 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Learn about the teacher behind LearnHub.",
+  description: "Learn about the teacher behind Smart Learning.",
 };
 
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-        About LearnHub
+        About Smart Learning
       </h1>
       <div className="mt-8 flex items-center gap-4">
         <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-100 text-2xl font-bold text-brand-700">
@@ -23,8 +23,8 @@ export default function AboutPage() {
       </div>
       <div className="mt-8 space-y-5 text-lg leading-relaxed text-gray-600">
         <p>
-          Welcome! LearnHub is a free online teaching platform built with one
-          simple goal: make quality education accessible to everyone.
+          Welcome! Smart Learning is a free online teaching platform built with
+          one simple goal: make quality education accessible to everyone.
         </p>
         <p>
           Every course is taught through short, focused video lessons that you

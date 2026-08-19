@@ -1,4 +1,4 @@
-# LearnHub — Online Teaching Website
+# Smart Learning — Online Teaching Website
 
 A free, simple online teaching website built with **Next.js**, **TypeScript** and **Tailwind CSS**. Students can browse a course catalogue and watch video lessons. Content is **fully dynamic** — stored in a free **Supabase** database, so the admin can add/edit/delete courses from the dashboard and students see changes instantly.
 

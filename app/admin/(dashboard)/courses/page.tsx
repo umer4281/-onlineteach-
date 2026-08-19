@@ -71,7 +71,7 @@ export default async function AdminCoursesPage({
           <Field name="category" label="Category" placeholder="Science" />
           <Field name="level" label="Level" placeholder="Beginner" />
           <Field name="instructor" label="Instructor" placeholder="Your Name" />
-          <Field name="thumbnail" label="Thumbnail path/URL" placeholder="/images/course.svg" />
+          <Field name="thumbnail" label="Thumbnail path/URL" placeholder="/images/quran.jpg" />
           <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700">
               Tagline

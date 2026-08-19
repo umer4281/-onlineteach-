@@ -65,7 +65,7 @@ export async function createCourseAction(formData: FormData) {
     tagline: String(formData.get("tagline") ?? "").trim(),
     description: String(formData.get("description") ?? "").trim(),
     thumbnail:
-      String(formData.get("thumbnail") ?? "").trim() || "/images/course.svg",
+      String(formData.get("thumbnail") ?? "").trim() || "/images/smart-logo.jpg",
     instructor: String(formData.get("instructor") ?? "").trim(),
     level: String(formData.get("level") ?? "Beginner").trim(),
     category: String(formData.get("category") ?? "General").trim(),
@@ -93,7 +93,7 @@ export async function updateCourseAction(formData: FormData) {
       tagline: String(formData.get("tagline") ?? "").trim(),
       description: String(formData.get("description") ?? "").trim(),
       thumbnail:
-        String(formData.get("thumbnail") ?? "").trim() || "/images/course.svg",
+        String(formData.get("thumbnail") ?? "").trim() || "/images/smart-logo.jpg",
       instructor: String(formData.get("instructor") ?? "").trim(),
       level: String(formData.get("level") ?? "Beginner").trim(),
       category: String(formData.get("category") ?? "General").trim(),

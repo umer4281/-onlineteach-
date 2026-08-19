@@ -70,7 +70,7 @@ function mapCourse(row: CourseRow): Course {
     title: row.title,
     tagline: row.tagline,
     description: row.description,
-    thumbnail: row.thumbnail || "/images/course.svg",
+    thumbnail: row.thumbnail || "/images/smart-logo.jpg",
     instructor: row.instructor,
     level: row.level,
     category: row.category,

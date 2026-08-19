@@ -1,100 +1,133 @@
 [
   {
-    "slug": "mathematics-basics",
-    "title": "Mathematics Basics",
-    "tagline": "Algebra, geometry and problem solving from absolute zero.",
-    "description": "A friendly, step-by-step introduction to the core ideas of mathematics. You'll build real confidence with numbers, equations and shapes through short, focused video lessons and worked examples.",
-    "thumbnail": "/images/mathematics.svg",
+    "slug": "quran-tajweed",
+    "title": "Quran: Tajweed & Recitation",
+    "tagline": "Read the Quran beautifully with correct Tajweed rules.",
+    "description": "A step-by-step course to recite the Quran with proper Tajweed. Learn the rules of pronunciation, rhythm and articulation through live classes and downloadable practice sheets.",
+    "thumbnail": "/images/quran.jpg",
     "instructor": "Your Name",
     "level": "Beginner",
-    "category": "Mathematics",
+    "category": "Quran",
     "lessons": [
       {
-        "id": "numbers-and-operations",
-        "title": "Numbers & Operations",
-        "description": "Whole numbers, fractions and the order of operations.",
-        "youtubeId": "jNQXAC9IVRw",
-        "duration": "12:30"
+        "id": "intro-to-tajweed",
+        "title": "Introduction to Tajweed",
+        "description": "Why Tajweed matters and how to approach the course.",
+        "meetUrl": "",
+        "duration": "Live"
       },
       {
-        "id": "introduction-to-algebra",
-        "title": "Introduction to Algebra",
-        "description": "What variables are and how to solve simple equations.",
-        "youtubeId": "aqz-KE-bpKQ",
-        "duration": "15:45"
+        "id": "makharij-letters",
+        "title": "Makharij: Articulation Points",
+        "description": "Where each letter comes from in the mouth and throat.",
+        "meetUrl": "",
+        "duration": "Live"
       },
       {
-        "id": "geometry-fundamentals",
-        "title": "Geometry Fundamentals",
-        "description": "Angles, triangles and the area of common shapes.",
-        "youtubeId": "dQw4w9WgXcQ",
-        "duration": "14:20"
+        "id": "rules-of-noon-and-meem",
+        "title": "Rules of Noon & Meem",
+        "description": "Ikhfa, Idgham, Iqlab and Izhar — made simple.",
+        "meetUrl": "",
+        "duration": "Live"
       }
     ]
   },
   {
-    "slug": "python-for-beginners",
-    "title": "Python for Beginners",
-    "tagline": "Write your first programs with the world's friendliest language.",
-    "description": "Learn Python from scratch — variables, loops, functions and small projects. Perfect if you've never programmed before, and a great way to start a career in tech.",
-    "thumbnail": "/images/python.svg",
+    "slug": "hadith-studies",
+    "title": "Hadith Studies",
+    "tagline": "Understand the sayings of the Prophet ﷺ with clarity.",
+    "description": "An introduction to the science of Hadith — its history, authenticity and lessons for daily life. Perfect for beginners who want to connect with the Sunnah.",
+    "thumbnail": "/images/hadith.jpg",
     "instructor": "Your Name",
     "level": "Beginner",
-    "category": "Programming",
+    "category": "Hadith",
     "lessons": [
       {
-        "id": "what-is-programming",
-        "title": "What is Programming?",
-        "description": "How computers follow instructions and what code looks like.",
-        "youtubeId": "9bZkp7q19f0",
-        "duration": "11:10"
+        "id": "what-is-hadith",
+        "title": "What is a Hadith?",
+        "description": "The difference between Quran and Hadith.",
+        "meetUrl": "",
+        "duration": "Live"
       },
       {
-        "id": "variables-and-data-types",
-        "title": "Variables & Data Types",
-        "description": "Storing information with variables, numbers, text and booleans.",
-        "youtubeId": "kJQP7kiw5Fk",
-        "duration": "18:05"
+        "id": "sahih-bukhari",
+        "title": "Getting to know Sahih al-Bukhari",
+        "description": "The most authentic book of Hadith and how it was compiled.",
+        "meetUrl": "",
+        "duration": "Live"
       },
       {
-        "id": "loops-and-conditions",
-        "title": "Loops & Conditions",
-        "description": "Making decisions with if/else and repeating work with loops.",
-        "youtubeId": "jNQXAC9IVRw",
-        "duration": "16:40"
+        "id": "hadith-in-daily-life",
+        "title": "Hadith in Daily Life",
+        "description": "Practical lessons from famous sayings of the Prophet ﷺ.",
+        "meetUrl": "",
+        "duration": "Live"
       }
     ]
   },
   {
-    "slug": "english-grammar",
-    "title": "English Grammar Essentials",
-    "tagline": "Master tenses, articles and sentence structure with confidence.",
-    "description": "A clear, practical guide to English grammar for learners at every level. Understand how sentences work and communicate more clearly in writing and speech.",
-    "thumbnail": "/images/english.svg",
+    "slug": "fiqh-essentials",
+    "title": "Fiqh Essentials",
+    "tagline": "Learn the everyday rulings of worship with confidence.",
+    "description": "Clear, practical Fiqh for daily life — purity, prayer, fasting and more — taught live with easy reference notes for every lesson.",
+    "thumbnail": "/images/fiqh.jpg",
     "instructor": "Your Name",
     "level": "All Levels",
-    "category": "Languages",
+    "category": "Fiqh",
     "lessons": [
       {
-        "id": "parts-of-speech",
-        "title": "Parts of Speech",
-        "description": "Nouns, verbs, adjectives and how sentences are built.",
-        "youtubeId": "dQw4w9WgXcQ",
-        "duration": "13:25"
+        "id": "purity-wudu",
+        "title": "Purity & Wudu",
+        "description": "The rules of purification before prayer.",
+        "meetUrl": "",
+        "duration": "Live"
       },
       {
-        "id": "verb-tenses",
-        "title": "Verb Tenses",
-        "description": "Past, present and future — and when to use each one.",
-        "youtubeId": "aqz-KE-bpKQ",
-        "duration": "17:50"
+        "id": "prayer-salah",
+        "title": "Prayer (Salah) Made Easy",
+        "description": "The pillars, conditions and common mistakes in prayer.",
+        "meetUrl": "",
+        "duration": "Live"
       },
       {
-        "id": "articles-and-prepositions",
-        "title": "Articles & Prepositions",
-        "description": "Master a, an, the, and the little words that connect ideas.",
-        "youtubeId": "9bZkp7q19f0",
-        "duration": "14:35"
+        "id": "fasting-ramadan",
+        "title": "Fasting in Ramadan",
+        "description": "The rulings and wisdom of the fast.",
+        "meetUrl": "",
+        "duration": "Live"
+      }
+    ]
+  },
+  {
+    "slug": "seerah-of-the-prophet",
+    "title": "Seerah of the Prophet ﷺ",
+    "tagline": "Walk through the life of the Prophet ﷺ, from Makkah to Madinah.",
+    "description": "An inspiring journey through the biography of the Prophet Muhammad ﷺ — his character, struggles and timeless lessons for Muslims today.",
+    "thumbnail": "/images/sirah.jpg",
+    "instructor": "Your Name",
+    "level": "All Levels",
+    "category": "Seerah",
+    "lessons": [
+      {
+        "id": "before-prophethood",
+        "title": "Makkah Before Prophethood",
+        "description": "The society into which the Prophet ﷺ was born.",
+        "meetUrl": "",
+        "duration": "Live"
+      },
+      {
+        "id": "the-revelation",
+        "title": "The First Revelation",
+        "description": "The beginning of the message in the cave of Hira.",
+        "meetUrl": "",
+        "duration": "Live"
+      },
+      {
+        "id": "the-hijrah",
+        "title": "The Hijrah to Madinah",
+        "description": "The migration that changed the course of history.",
+        "meetUrl": "",
+        "duration": "Live"
       }
     ]
   }

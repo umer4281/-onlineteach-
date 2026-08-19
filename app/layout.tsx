@@ -6,11 +6,11 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "LearnHub — Free Online Courses & Video Lessons",
-    template: "%s | LearnHub",
+    default: "Smart Learning — Free Online Courses & Live Classes",
+    template: "%s | Smart Learning",
   },
   description:
-    "Learn anything with free, high-quality video courses. Browse the catalogue and start learning today.",
+    "Learn anything with free live classes and downloadable resources. Browse the catalogue and start learning today.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
