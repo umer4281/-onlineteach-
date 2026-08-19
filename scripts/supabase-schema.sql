@@ -55,6 +55,11 @@ alter table public.courses enable row level security;
 alter table public.lessons enable row level security;
 alter table public.resources enable row level security;
 
+-- Drop first so the script can be run again safely
+drop policy if exists "courses public read" on public.courses;
+drop policy if exists "lessons public read" on public.lessons;
+drop policy if exists "resources public read" on public.resources;
+
 create policy "courses public read" on public.courses for select using (true);
 create policy "lessons public read" on public.lessons for select using (true);
 create policy "resources public read" on public.resources for select using (true);
