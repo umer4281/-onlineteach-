@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getCourses, pluralize } from "@/lib/courses";
 import { getAdminCredentials } from "@/lib/session";
-import { isSupabaseConfigured } from "@/lib/supabase";
+import { isSupabaseConfigured, missingSupabaseEnv } from "@/lib/supabase";
 import ConfirmButton from "@/components/ConfirmButton";
 import {
   logoutAction,
@@ -39,23 +39,27 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
         <div className="mb-8 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-amber-800">
           <h2 className="font-bold">Supabase not connected yet</h2>
           <p className="mt-1 text-sm">
-            Add{" "}
-            <code className="rounded bg-white px-1 py-0.5">
-              NEXT_PUBLIC_SUPABASE_URL
-            </code>
-            ,{" "}
-            <code className="rounded bg-white px-1 py-0.5">
-              NEXT_PUBLIC_SUPABASE_ANON_KEY
-            </code>{" "}
-            and{" "}
-            <code className="rounded bg-white px-1 py-0.5">
-              SUPABASE_SERVICE_ROLE_KEY
-            </code>{" "}
-            on Vercel, run{" "}
-            <code className="rounded bg-white px-1 py-0.5">
-              scripts/supabase-schema.sql
-            </code>
-            , then redeploy. See the README.
+            These environment variables are still missing on the deployed site:
+          </p>
+          <ul className="mt-2 space-y-1">
+            {missingSupabaseEnv().map((name) => (
+              <li key={name} className="text-sm">
+                →{" "}
+                <code className="rounded bg-white px-1.5 py-0.5 font-mono">
+                  {name}
+                </code>{" "}
+                {name === "NEXT_PUBLIC_SUPABASE_URL" &&
+                  "(= https://xxxx.supabase.co)"}
+                {name === "NEXT_PUBLIC_SUPABASE_ANON_KEY" &&
+                  "(= your sb_publishable_... key)"}
+                {name === "SUPABASE_SERVICE_ROLE_KEY" &&
+                  "(= your sb_secret_... key — server-side only)"}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-sm">
+            Add them in Vercel → Settings → Environment Variables, then click{" "}
+            <b>Redeploy</b> on the Deployments tab. See the README.
           </p>
         </div>
       )}

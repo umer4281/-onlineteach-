@@ -23,6 +23,15 @@ export const supabaseAdmin: SupabaseClient | null =
 export const isSupabaseConfigured =
   Boolean(supabasePublic) && Boolean(supabaseAdmin);
 
+/** Names of the Supabase environment variables that are still empty. */
+export function missingSupabaseEnv(): string[] {
+  const missing: string[] = [];
+  if (!url) missing.push("NEXT_PUBLIC_SUPABASE_URL");
+  if (!anonKey) missing.push("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  if (!serviceKey) missing.push("SUPABASE_SERVICE_ROLE_KEY");
+  return missing;
+}
+
 /** Public URL for a file stored in the resources bucket. */
 export function resourceFileUrl(filePath: string): string {
   return `${url}/storage/v1/object/public/${RESOURCE_BUCKET}/${filePath}`;
