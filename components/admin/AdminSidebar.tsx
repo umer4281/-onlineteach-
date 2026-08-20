@@ -4,13 +4,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/admin/actions";
+import type { SessionIdentity } from "@/lib/session";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: "📊", exact: true },
   { href: "/admin/courses", label: "Courses", icon: "📚", exact: false },
+  { href: "/admin/students", label: "Students", icon: "🎓", exact: false },
+  { href: "/admin/admins", label: "Admins", icon: "👥", exact: false },
 ];
 
-function DesktopSidebar({ pathname }: { pathname: string }) {
+function DesktopSidebar({ pathname, user }: { pathname: string; user?: SessionIdentity | null }) {
+  const displayName = user?.name || "Admin";
+  const displayEmail = user?.email || "Signed in via dashboard";
+
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-gray-200 bg-white lg:flex">
       <div className="flex items-center gap-3 px-6 py-6">
@@ -21,9 +27,13 @@ function DesktopSidebar({ pathname }: { pathname: string }) {
           height={40}
           className="h-10 w-10 rounded-xl object-cover"
         />
-        <div>
-          <p className="font-bold leading-tight text-gray-900">Smart Learning</p>
-          <p className="text-xs font-medium text-gray-400">Admin</p>
+        <div className="min-w-0">
+          <p className="font-bold leading-tight text-gray-900">
+            {displayName}
+          </p>
+          <p className="truncate text-xs font-medium text-gray-400">
+            {displayEmail}
+          </p>
         </div>
       </div>
 
@@ -116,11 +126,15 @@ function MobileBar({ pathname }: { pathname: string }) {
   );
 }
 
-export default function AdminSidebar() {
+export default function AdminSidebar({
+  user,
+}: {
+  user?: SessionIdentity | null;
+}) {
   const pathname = usePathname() ?? "";
   return (
     <>
-      <DesktopSidebar pathname={pathname} />
+      <DesktopSidebar pathname={pathname} user={user} />
       <MobileBar pathname={pathname} />
     </>
   );

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
-import { isAdmin } from "@/lib/auth";
+import { isAdmin, getSessionUser } from "@/lib/auth";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
 export const dynamic = "force-dynamic";
@@ -11,10 +11,11 @@ export default async function AdminLayout({
   children: ReactNode;
 }) {
   if (!(await isAdmin())) redirect("/admin/login");
+  const user = await getSessionUser();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AdminSidebar />
+      <AdminSidebar user={user} />
       <div className="lg:pl-64">
         <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10">
           {children}

@@ -1,20 +1,24 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
-import { loginAction } from "@/app/admin/actions";
+import { studentLoginAction } from "@/app/student/actions";
 
 export const metadata: Metadata = {
-  title: "Admin Login",
-  description: "Sign in to manage your teaching site.",
+  title: "Student Login",
+  description: "Sign in to view your attendance and profile.",
 };
 
-type SearchParams = Promise<{ error?: string; loggedOut?: string; next?: string }>;
+type SearchParams = Promise<{ error?: string; loggedOut?: string }>;
 
 const inputCls =
   "mt-1 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-gray-400 outline-none backdrop-blur focus:border-brand-400 focus:ring-2 focus:ring-brand-400/40";
 
-export default async function LoginPage({ searchParams }: { searchParams: SearchParams }) {
-  const { error, loggedOut, next } = await searchParams;
+export default async function StudentLoginPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const { error, loggedOut } = await searchParams;
 
   return (
     <div className="relative isolate min-h-screen overflow-hidden bg-gray-950">
@@ -32,15 +36,15 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
 
         <div className="mt-6 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-brand-900/20 backdrop-blur-xl">
           <div className="text-center">
-            <h1 className="text-2xl font-extrabold text-white">Welcome back</h1>
+            <h1 className="text-2xl font-extrabold text-white">Student login</h1>
             <p className="mt-1 text-sm text-brand-200">
-              Sign in to the Smart Learning dashboard.
+              Enter the roll number and password your teacher gave you.
             </p>
           </div>
 
           {error && (
             <p className="mt-4 rounded-xl bg-rose-500/15 px-4 py-3 text-sm font-medium text-rose-200">
-              Invalid email or password. Please try again.
+              Invalid roll number or password. Please try again.
             </p>
           )}
           {loggedOut && (
@@ -49,20 +53,19 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
             </p>
           )}
 
-          <form action={loginAction} className="mt-6 space-y-4">
-            <input type="hidden" name="next" value={next || ""} />
+          <form action={studentLoginAction} className="mt-6 space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-brand-100">
-                Email
+              <label htmlFor="rollNo" className="block text-sm font-medium text-brand-100">
+                Roll number
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
+                id="rollNo"
+                name="rollNo"
+                type="text"
                 required
-                autoComplete="email"
+                autoComplete="username"
                 className={inputCls}
-                placeholder="you@example.com"
+                placeholder="e.g. M-101"
               />
             </div>
             <div>
@@ -83,21 +86,17 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
               type="submit"
               className="w-full rounded-xl bg-gradient-to-r from-brand-500 to-violet-500 py-3 text-sm font-bold text-white shadow-lg transition hover:brightness-110"
             >
-              Sign in
+              View my page
             </button>
           </form>
-
-          <div className="mt-5 flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-brand-200">
-            <span aria-hidden>🔐</span>
-            <span>
-              New admins are created by the site owner from the dashboard.
-            </span>
-          </div>
         </div>
 
-        <div className="mt-6 text-center">
-          <Link href="/" className="text-sm font-medium text-brand-200 hover:text-brand-100">
-            ← Back to site
+        <div className="mt-6 text-center space-y-2 text-sm">
+          <Link href="/" className="block font-medium text-brand-200 hover:text-brand-100">
+            ← Back to home
+          </Link>
+          <Link href="/admin/login" className="block text-brand-200/70 hover:text-brand-100">
+            Are you the admin? Sign in here
           </Link>
         </div>
       </div>

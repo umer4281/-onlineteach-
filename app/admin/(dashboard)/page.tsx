@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getCourses, pluralize } from "@/lib/courses";
+import { getStudents } from "@/lib/students";
 import { isSupabaseConfigured, missingSupabaseEnv } from "@/lib/supabase";
+import { getSessionUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -12,27 +14,21 @@ export const metadata: Metadata = {
 
 export default async function AdminDashboardPage() {
   const courses = await getCourses();
+  const students = await getStudents();
+  const user = await getSessionUser();
+  const firstName = (user?.name || "Admin").trim().split(" ")[0];
 
   const totalLessons = courses.reduce((s, c) => s + c.lessons.length, 0);
   const totalResources = courses.reduce(
     (s, c) => s + c.lessons.reduce((x, l) => x + l.resources.length, 0),
     0
   );
-  const totalLikes = courses.reduce(
-    (s, c) =>
-      s +
-      c.lessons.reduce(
-        (x, l) => x + l.resources.reduce((y, r) => y + r.likes, 0),
-        0
-      ),
-    0
-  );
 
   const stats = [
+    { label: "Students", value: students.length, icon: "🎓" },
     { label: "Courses", value: courses.length, icon: "📚" },
     { label: "Lessons", value: totalLessons, icon: "🎥" },
     { label: "Resources", value: totalResources, icon: "📎" },
-    { label: "Total likes", value: totalLikes, icon: "❤️" },
   ];
 
   return (
@@ -63,10 +59,10 @@ export default async function AdminDashboardPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-            Dashboard
+            Hey{firstName ? `, ${firstName}` : ""} 👋
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Overview of your teaching site
+            Here&apos;s what&apos;s happening on your teaching site.
           </p>
         </div>
         <Link
@@ -152,10 +148,22 @@ export default async function AdminDashboardPage() {
           </div>
           <div className="space-y-2 p-4">
             <Link
-              href="/admin/courses"
+              href="/admin/students"
               className="flex items-center gap-3 rounded-xl bg-brand-50 px-4 py-3 text-sm font-semibold text-brand-700 transition hover:bg-brand-100"
             >
+              <span aria-hidden>🎓</span> Register students & mark attendance
+            </Link>
+            <Link
+              href="/admin/courses"
+              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-gray-600 transition hover:bg-gray-50"
+            >
               <span aria-hidden>➕</span> Add a new course
+            </Link>
+            <Link
+              href="/admin/admins"
+              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-gray-600 transition hover:bg-gray-50"
+            >
+              <span aria-hidden>👥</span> Manage admin accounts
             </Link>
             <Link
               href="/"

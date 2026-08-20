@@ -6,6 +6,7 @@
  */
 
 export const SESSION_COOKIE = "learnhub_admin_session";
+export const STUDENT_SESSION_COOKIE = "learnhub_student_session";
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -83,36 +84,97 @@ export async function verifyAdminCredentials(
   return emailOk && safeEqual(password, creds.password) && passwordOk;
 }
 
-/** Create a signed, expiring session token. */
-export async function createSessionToken(): Promise<string> {
+/** Who is signed in — carried inside the (signed) session token. */
+export interface SessionIdentity {
+  uid?: string;
+  name?: string;
+  email?: string;
+  /** Which area this identity grants access to. */
+  role?: "admin" | "student";
+}
+
+/** Create a signed, expiring session token, optionally with the admin identity. */
+export async function createSessionToken(
+  identity?: SessionIdentity
+): Promise<string> {
   const payload = bytesToBase64Url(
-    encoder.encode(JSON.stringify({ exp: Date.now() + SESSION_TTL_MS }))
+    encoder.encode(
+      JSON.stringify({ exp: Date.now() + SESSION_TTL_MS, ...identity })
+    )
   );
   const signature = await signHmac(payload);
   return `${payload}.${signature}`;
 }
 
-/** Verify a session token's signature and expiry. */
-export async function verifySessionToken(
+/** Decode + verify a token, returning the signed-in identity (or null). */
+export async function readSessionIdentity(
   token: string | undefined | null
-): Promise<boolean> {
-  if (!token) return false;
+): Promise<SessionIdentity | null> {
+  if (!token) return null;
   const idx = token.lastIndexOf(".");
-  if (idx < 0) return false;
+  if (idx < 0) return null;
   const payload = token.slice(0, idx);
   const signature = token.slice(idx + 1);
 
   const expected = await signHmac(payload);
-  if (!safeEqual(signature, expected)) return false;
+  if (!safeEqual(signature, expected)) return null;
 
   try {
     const parsed = JSON.parse(decoder.decode(base64UrlToBytes(payload)));
-    return (
-      typeof parsed.exp === "number" &&
-      Number.isFinite(parsed.exp) &&
-      Date.now() < parsed.exp
-    );
+    if (
+      typeof parsed.exp !== "number" ||
+      !Number.isFinite(parsed.exp) ||
+      Date.now() >= parsed.exp
+    ) {
+      return null;
+    }
+    return {
+      uid: typeof parsed.uid === "string" ? parsed.uid : undefined,
+      name: typeof parsed.name === "string" ? parsed.name : undefined,
+      email: typeof parsed.email === "string" ? parsed.email : undefined,
+      role: parsed.role === "student" ? "student" : parsed.role === "admin" ? "admin" : undefined,
+    };
   } catch {
-    return false;
+    return null;
   }
 }
+
+/** Verify a session token's signature and expiry (used by middleware + guards). */
+export async function verifySessionToken(
+  token: string | undefined | null
+): Promise<boolean> {
+  return readSessionIdentity(token) !== null;
+}
+
+/* ----------------------- admin password hashing helpers ----------------------- */
+
+function randomHex(bytes = 16): string {
+  const arr = new Uint8Array(bytes);
+  crypto.getRandomValues(arr);
+  return [...arr].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** Hash a plaintext password into a salted `salt:hash` string for the admins table. */
+export async function hashAdminPassword(password: string): Promise<string> {
+  const salt = randomHex();
+  const hash = await sha256Hex(`${salt}:${password}`);
+  return `${salt}:${hash}`;
+}
+
+/** Verify a plaintext password against a stored `salt:hash` string. */
+export async function verifyAdminPassword(
+  password: string,
+  stored: string
+): Promise<boolean> {
+  const [salt, hash] = stored.split(":");
+  if (!salt || !hash) return false;
+  const check = await sha256Hex(`${salt}:${password}`);
+  return safeEqual(check, hash);
+}
+
+/* -------- shared password helpers (students + admins use the same) -------- */
+
+/** Alias used for student accounts. */
+export const hashPassword = hashAdminPassword;
+/** Alias used for student accounts. */
+export const verifyPassword = verifyAdminPassword;

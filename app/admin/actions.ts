@@ -2,27 +2,205 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { verifyAdminCredentials } from "@/lib/session";
-import { setAdminSession, clearAdminSession, isAdmin } from "@/lib/auth";
-import { supabaseAdmin, isSupabaseConfigured, RESOURCE_BUCKET } from "@/lib/supabase";
+import {
+  verifyAdminCredentials,
+  hashAdminPassword,
+  verifyAdminPassword,
+} from "@/lib/session";
+import { setAdminSession, clearAdminSession, isAdmin, getSessionUser } from "@/lib/auth";
+import {
+  supabaseAdmin,
+  isSupabaseConfigured,
+  RESOURCE_BUCKET,
+} from "@/lib/supabase";
 
 /* ---------------------------------- auth ---------------------------------- */
 
-export async function loginAction(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
+/** Keep the redirect target on /admin paths only (defence against open redirect). */
+function safeNextPath(value: string | null): string {
+  if (!value) return "/admin";
+  try {
+    const path = new URL(value, "http://localhost").pathname;
+    return path.startsWith("/admin") ? path : "/admin";
+  } catch {
+    return "/admin";
+  }
+}
 
-  if (!(await verifyAdminCredentials(email, password))) {
-    redirect("/admin/login?error=1");
+export async function loginAction(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const password = String(formData.get("password") ?? "");
+  const next = safeNextPath(String(formData.get("next") ?? ""));
+
+  // 1) Registered admins — stored in the database (hashed passwords).
+  if (isSupabaseConfigured && supabaseAdmin) {
+    const { data } = await supabaseAdmin
+      .from("admins")
+      .select("id,email,name,password_hash")
+      .eq("email", email)
+      .maybeSingle();
+
+    if (data) {
+      if (await verifyAdminPassword(password, data.password_hash)) {
+        await setAdminSession({
+          uid: data.id,
+          email: data.email,
+          name: data.name,
+        });
+        redirect(next);
+      }
+      redirect("/admin/login?error=1");
+    }
   }
 
-  await setAdminSession();
-  redirect("/admin");
+  // 2) Fall back to the seeded demo admin (ADMIN_EMAIL / ADMIN_PASSWORD env vars).
+  if (await verifyAdminCredentials(email, password)) {
+    await setAdminSession({ email, name: "Admin" });
+    redirect("/admin");
+  }
+
+  redirect("/admin/login?error=1");
+}
+
+export async function registerAdminAction(formData: FormData) {
+  await requireAdmin();
+
+  const name = String(formData.get("name") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const password = String(formData.get("password") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+
+  if (!name || !email || !password || !confirm) {
+    redirect("/admin/admins?error=required");
+  }
+  if (password.length < 6) redirect("/admin/admins?error=short");
+  if (password !== confirm) redirect("/admin/admins?error=mismatch");
+
+  const { data: existing } = await supabaseAdmin!
+    .from("admins")
+    .select("id")
+    .eq("email", email)
+    .maybeSingle();
+  if (existing) redirect("/admin/admins?error=exists");
+
+  const password_hash = await hashAdminPassword(password);
+  const { error } = await supabaseAdmin!
+    .from("admins")
+    .insert({ name, email, password_hash });
+
+  if (error) redirect("/admin/admins?error=failed");
+  redirect("/admin/admins?created=1");
+}
+
+export async function deleteAdminAction(formData: FormData) {
+  await requireAdmin();
+
+  const me = await getSessionUser();
+  const targetId = String(formData.get("adminId") ?? "");
+
+  if (!targetId) redirect("/admin/admins?error=invalid");
+
+  // Never allow an admin to remove their own account (would lock you out).
+  if (me?.uid && me.uid === targetId) {
+    redirect("/admin/admins?error=self-delete");
+  }
+
+  // Guard against deleting the last admin. Read remaining count first.
+  const { count } = await supabaseAdmin!
+    .from("admins")
+    .select("id", { count: "exact" });
+  if ((count ?? 0) <= 1) redirect("/admin/admins?error=last-admin");
+
+  const { error } = await supabaseAdmin!
+    .from("admins")
+    .delete()
+    .eq("id", targetId);
+
+  if (error) redirect("/admin/admins?error=failed");
+  redirect("/admin/admins?deleted=1");
 }
 
 export async function logoutAction() {
   await clearAdminSession();
   redirect("/admin/login?loggedOut=1");
+}
+
+/* ------------------------------- students -------------------------------- */
+
+export async function createStudentAction(formData: FormData) {
+  await requireAdmin();
+
+  const rollNo = String(formData.get("rollNo") ?? "").trim().toUpperCase();
+  const name = String(formData.get("name") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+
+  if (!rollNo || !name || !password || !confirm) {
+    redirect("/admin/students?error=required");
+  }
+  if (password.length < 6) redirect("/admin/students?error=short");
+  if (password !== confirm) redirect("/admin/students?error=mismatch");
+
+  const { data: existing } = await supabaseAdmin!
+    .from("students")
+    .select("id")
+    .eq("roll_no", rollNo)
+    .maybeSingle();
+  if (existing) redirect("/admin/students?error=exists");
+
+  const password_hash = await hashAdminPassword(password);
+  const { error } = await supabaseAdmin!.from("students").insert({
+    roll_no: rollNo,
+    name,
+    class: String(formData.get("class") ?? "").trim(),
+    guardian_name: String(formData.get("guardianName") ?? "").trim(),
+    guardian_phone: String(formData.get("guardianPhone") ?? "").trim(),
+    password_hash,
+  });
+
+  if (error) redirect("/admin/students?error=failed");
+  redirect("/admin/students?created=1");
+}
+
+export async function deleteStudentAction(formData: FormData) {
+  await requireAdmin();
+  const studentId = String(formData.get("studentId") ?? "");
+  if (!studentId) redirect("/admin/students?error=invalid");
+
+  const { error } = await supabaseAdmin!
+    .from("students")
+    .delete()
+    .eq("id", studentId);
+  if (error) redirect("/admin/students?error=failed");
+  redirect("/admin/students?deleted=1");
+}
+
+/* ------------------------------ attendance ------------------------------- */
+
+export async function recordAttendanceAction(formData: FormData) {
+  await requireAdmin();
+
+  const date = String(formData.get("date") ?? "");
+  const studentIds = formData.getAll("studentId").map(String);
+  const statuses = formData.getAll("status").map(String);
+
+  if (!date || !studentIds.length || studentIds.length !== statuses.length) {
+    redirect("/admin/students?error=attendance");
+  }
+
+  const rows = studentIds.map((studentId, i) => ({
+    student_id: studentId,
+    date,
+    status: statuses[i] === "absent" ? "absent" : statuses[i] === "late" ? "late" : "present",
+  }));
+
+  // Upsert on (student_id, date) so re-saving today's list just updates it.
+  const { error } = await supabaseAdmin!.from("attendance").upsert(rows, {
+    onConflict: "student_id,date",
+  });
+
+  if (error) redirect("/admin/students?error=attendance-save");
+  redirect(`/admin/students?saved=1&date=${date}`);
 }
 
 /* ------------------------------ shared helpers ----------------------------- */
